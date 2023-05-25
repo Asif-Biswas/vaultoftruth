@@ -1,0 +1,39 @@
+{% extends 'truthlist/base.html' %}
+{% load static %}
+{% block content %}
+<form class="container my-5">
+    <h2 class="text-center">Truth List</h2>
+    <table class="table mt-3">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Question</th>
+            <th scope="col">Agree</th>
+            <th scope="col">Disagree</th>
+            <th scope="col">No Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+
+            {% for data in user_data.get_data %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ data.0 }}</td>
+                <td>
+                    <input class="radio-btn" type="radio" value="agree" {% if data.1 == 'agree' %} checked {% else %} disabled {% endif %}>
+                </td>
+                <td>
+                    <input class="radio-btn" type="radio" value="disagree" {% if data.1 == 'disagree' %} checked {% else %} disabled {% endif %}>
+                </td>
+                <td>
+                    <input class="radio-btn" type="radio" value="no_comment" {% if data.1 == 'no_comment' %} checked {% else %} disabled {% endif %}>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</form>
+<br><br><br><br><br>
+
+
+{% endblock %}
