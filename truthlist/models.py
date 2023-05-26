@@ -12,7 +12,7 @@ class UserData(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user
+        return self.user.username
     
     def get_data(self):
         return json.loads(self.data)
