@@ -1,42 +1,33 @@
 {% extends 'truthlist/base.html' %}
 {% load static %}
 {% block content %}
-<form class="container my-5" action="{% url 'home' %}" method="POST">
-    {% csrf_token %}
-    <h2 class="text-center">Truth List</h2>
-    <table class="table mt-3">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Question</th>
-            <th scope="col">Agree</th>
-            <th scope="col">Disagree</th>
-            <th scope="col">No Comment</th>
-          </tr>
-        </thead>
-        <tbody>
 
-            {% for data in data_list %}
-            <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>{{ data.1 }}</td>
-                <td>
-                    <input class="radio-btn" type="radio" name="{{ data.0 }}" value="agree">
-                </td>
-                <td>
-                    <input class="radio-btn" type="radio" name="{{ data.0 }}" value="disagree">
-                </td>
-                <td>
-                    <input class="radio-btn" type="radio" name="{{ data.0 }}" value="no_comment">
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div class="text-center mb-5 mt-3">
-        <button type="submit" class="btn btn-primary">Submit</button>
+<div style="background-image: url('{% static 'truthlist/cover.jpg' %}'); background-size: cover; background-position: center; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
+    <div class="container" style="display: flex; flex-direction: column; justify-content: end; height: 80vh;">
+        <p style="font-size: 22px;">
+            Facilitating the search for Truth
+        </p>
+        <h1>
+            The Truth shall<br>
+            set you free
+        </h1>
+        {% if user.is_authenticated %}
+            <a href="{% url 'assessment' %}" >
+                <button class="bg-primary border-0 text-white mt-3" style="width: 200px; height: 50px; font-weight: bold;">
+                    Assessment
+                </button>
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" >
+                <button class="bg-primary border-0 text-white mt-3" style="width: 200px; height: 50px; font-weight: bold;">
+                Log in
+                </button>
+            </a>
+        {% endif %}
     </div>
-</form>
+</div>
+
+
 <br><br><br><br><br>
 
 <script>

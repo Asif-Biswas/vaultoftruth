@@ -8,32 +8,34 @@
           <tr>
             <th scope="col">#</th>
             <th scope="col">Question</th>
-            <th scope="col">Your Believe</th>
-            <th scope="col">Add to Certificate</th>
+            <th scope="col">Argument</th>
+            <th scope="col">Truth/Lie</th>
             <th scope="col">General public</th>
             <th scope="col">% Of public believes</th>
           </tr>
         </thead>
         <tbody>
 
-            {% for data in questions %}
+            {% for data in user_answer %}
             <tr>
                 <th scope="row">{{ forloop.counter }}</th>
                 <td>{{ data.question }}</td>
                 <td>
-                    {% if data.answer == 'agree' %} 
-                        Agree 
-                    {% elif data.answer == 'disagree' %}
-                        Disagree
-                    {% else %}
-                        No Comment
-                    {% endif %}
+                    <a href="{% url 'reasons' data.id %}">Reason</a>
                 </td>
-                <td>
-                    <select class="form-select" aria-label="Default select example" onchange="add_to_certtificate(this.value, {{ data.id }})">
-                        <option {% if data.add_to_certificate%} selected {% endif %} value="true">Yes</option>
-                        <option {% if not data.add_to_certificate%} selected {% endif %} value="false">No</option>
-                    </select>
+                {% if data.general_public.0 == 'Agree' and data.general_public.1 >= 80 %}
+                    <td style="background-color: green;">
+                        Truth
+                    </td>
+                {% elif data.general_public.0 == 'Disagree' and data.general_public.1 >= 80 %}
+                    <td style="background-color: red;">
+                        Lie
+                    </td>
+                {% else %}
+                    <td style="background-color: yellow;">
+                        Middle
+                    </td>
+                {% endif %}
                 <td>
                     {{ data.general_public.0 }}
                 </td>
