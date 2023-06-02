@@ -120,7 +120,24 @@ def public_believes(request):
 
 
 def reasons(request, id):
-    return render(request, 'truthlist/reasons.html', {'id': id})
+    question = Question.objects.get(id=id)
+    all_reasons = Reason.objects.filter(question=question)
+    return render(request, 'truthlist/reasons.html', {'question': question, 'reasons': all_reasons})
+
+
+def add_reason(request, id):
+    if request.method == 'POST':
+        reason = request.POST.get('reason')
+        if reason:
+            r = Reason.objects.get_or_create(user=request.user, question_id=id)[0]
+            r.reason = reason
+            r.save()
+            messages.success(request, "Reason added successfully")
+            return redirect('add_reason', id=id)
+        else:
+            messages.error(request, "Reason is required")
+            return redirect('add_reason', id=id)
+    return render(request, 'truthlist/add_reason.html', {'id': id})
 
 
 
