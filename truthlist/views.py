@@ -14,9 +14,9 @@ from .models import *
 # Create your views here.
 
 def home(request):
-    
     return render(request,'truthlist/home.html')
 
+@login_required(login_url='login')
 def upload(request):
     if request.method == 'POST':
         file = request.FILES['file']
@@ -47,11 +47,13 @@ def upload(request):
     return render(request, 'truthlist/upload.html')
 
 
+@login_required(login_url='login')
 def profile(request):
     questions = UserAnswer.objects.filter(user=request.user)
     return render(request, 'truthlist/profile.html', {'questions': questions})
 
 
+@login_required(login_url='login')
 def assessment(request):
     questions = Question.objects.filter(active=True)
     if request.method == 'POST':
@@ -66,6 +68,7 @@ def assessment(request):
     return render(request, 'truthlist/assessment.html', {'questions': questions})
 
 
+@login_required(login_url='login')
 def add_to_certificate(request, id, value):
     ua = UserAnswer.objects.get(id=id)
     if value == 'true':
@@ -76,6 +79,7 @@ def add_to_certificate(request, id, value):
     return redirect('profile')
 
 
+@login_required(login_url='login')
 def add_new_question(request):
     if request.method == 'POST':
         question = request.POST.get('question')
@@ -96,11 +100,13 @@ def add_new_question(request):
     return render(request, 'truthlist/add_new_question.html', {'categories': categories})
 
 
+@login_required(login_url='login')
 def pending_questions(request):
     questions = Question.objects.filter(active=False)
     return render(request, 'truthlist/pending_questions.html', {'questions': questions})
 
 
+@login_required(login_url='login')
 def approve_question(request, id):
     q = Question.objects.get(id=id)
     q.active = True
@@ -108,6 +114,7 @@ def approve_question(request, id):
     return redirect('pending_questions')
 
 
+@login_required(login_url='login')
 def reject_question(request, id):
     q = Question.objects.get(id=id)
     q.delete()
@@ -125,6 +132,7 @@ def reasons(request, id):
     return render(request, 'truthlist/reasons.html', {'question': question, 'reasons': all_reasons})
 
 
+@login_required(login_url='login')
 def add_reason(request, id):
     if request.method == 'POST':
         reason = request.POST.get('reason')
