@@ -51,15 +51,19 @@ class UserAnswer(models.Model):
         # return the greater of agree or disagree or no comment
         if agree > disagree and agree > no_comment:
             parcentage = (agree / total) * 100
+            parcentage = round(parcentage, 2)
             return 'Agree', parcentage
         elif disagree > agree and disagree > no_comment:
             parcentage = (disagree / total) * 100
+            parcentage = round(parcentage, 2)
             return 'Disagree', parcentage
         elif no_comment > agree and no_comment > disagree:
             parcentage = (no_comment / total) * 100
+            parcentage = round(parcentage, 2)
             return 'No comment', parcentage
         else:
             parcentage = (no_comment / total) * 100
+            parcentage = round(parcentage, 2)
             return 'No comment', parcentage
 
     

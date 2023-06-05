@@ -23,8 +23,10 @@
                     <td>{{ q.category.name }}</td>
                     <td>{{ q.is_fundamental }}</td>
                     <td>
-                        <a href="{% url 'approve_question' q.id %}" class="btn btn-sm mr-1 btn-primary">Approve</a>
-                        <a href="{% url 'reject_question' q.id %}" class="btn btn-sm btn-danger">Reject</a>
+                        <a class="btn btn-sm mr-1 btn-primary" {% if user.is_superuser %} href="{% url 'approve_question' q.id %}" {% else %} onclick="alert('You are not authorized to perform this action')" {% endif %}
+                        >Approve</a>
+                        <a class="btn btn-sm btn-danger" {% if user.is_superuser %} href="{% url 'reject_question' q.id %}" {% else %} onclick="alert('You are not authorized to perform this action')" {% endif %}
+                        >Reject</a>
                     </td>
                 </tr>
                 {% endfor %}

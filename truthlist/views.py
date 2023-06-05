@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 import pandas as pd
 from django.contrib import messages
@@ -8,6 +8,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 import json
 from .models import *
+from reportlab.pdfgen import canvas
+import datetime
+
+
 
 
 
@@ -148,6 +152,61 @@ def add_reason(request, id):
     return render(request, 'truthlist/add_reason.html', {'id': id})
 
 
+@login_required(login_url='login')
+def download_certificate(request):
+    questions = UserAnswer.objects.filter(user=request.user, add_to_certificate=True)
+    if request.method == 'POST':
+        if questions:
+            # make a PDF certificate. keep user full name, email, date, questions and answers
+            user = request.user
+            full_name = user.first_name + ' ' + user.last_name
+            email = user.email
+            date = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+            p = canvas.Canvas(response)
+            # text center with large font size
+            p.setFont('Helvetica-Bold', 20)
+            p.drawCentredString(300, 800, 'Certificate of Truth')
+            p.setFont('Helvetica', 12)
+            p.drawString(100, 770, 'Name: ' + full_name)
+            p.drawString(100, 750, 'Email: ' + email)
+            # y = 700
+            # for q in questions:
+            #     p.drawString(100, y, 'Question: ' + q.question.question)
+            #     answer = q.answer
+            #     if answer == 'agree':
+            #         answer = 'Agree'
+            #     elif answer == 'disagree':
+            #         answer = 'Disagree'
+            #     else:
+            #         answer = 'No comment'
+            #     p.drawString(100, y-20, 'Answer: ' + answer)
+            #     y -= 40
+
+            # handle page height. if page height is less than 100, then create a new page
+            y = 700
+            for q in questions:
+                p.drawString(100, y, 'Question: ' + q.question.question)
+                answer = q.answer
+                if answer == 'agree':
+                    answer = 'Agree'
+                elif answer == 'disagree':
+                    answer = 'Disagree'
+                else:
+                    answer = 'No comment'
+                p.drawString(100, y-20, 'Answer: ' + answer)
+                y -= 50
+                if y < 100:
+                    p.showPage()
+                    y = 700
+            p.showPage()
+            p.save()
+            return response
+        else:
+            messages.error(request, "No questions found")
+            return redirect('download_certificate')
+    return render(request, 'truthlist/download_certificate.html', {'questions': questions})
 
 
 

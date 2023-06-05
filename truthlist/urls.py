@@ -17,4 +17,5 @@ urlpatterns = [
     path('reject-question/<int:id>/', views.reject_question, name='reject_question'),
     path('public-believes/', views.public_believes, name='public_believes'),
     path('reasons/<int:id>/', views.reasons, name='reasons'),
+    path('download-certificate/', views.download_certificate, name='download_certificate'),
 ]

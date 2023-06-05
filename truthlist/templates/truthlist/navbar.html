@@ -1,4 +1,4 @@
-<nav>
+<nav style="position: sticky; top: 0; z-index: 1;" class="mt-0 pt-2 navbar-light bg-light">
   <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"
         >&times;</a
@@ -8,6 +8,8 @@
       <a href="{% url 'assessment' %}">Assessment</a>
       <a href="{% url 'public_believes' %}">Public Believes</a>
       <a href="{% url 'add_new_question' %}">Add New Question</a>
+      <a href="{% url 'pending_questions' %}">Pending Questions</a>
+      <a href="{% url 'download_certificate' %}">Download Certificate</a>
       <a href="{% url 'logout' %}">Logout</a>
     {% else %}
       <a href="{% url 'login' %}">Login</a>
@@ -17,7 +19,6 @@
     
     {% if user.is_superuser %}
       <a href="{% url 'upload' %}">Upload Excel</a>
-      <a href="{% url 'pending_questions' %}">Pending Questions</a>
     {% endif %}
     
 </div>
@@ -39,7 +40,7 @@
   </div>
 </div>
       
-  </nav>
+</nav>
   {% if messages %}
     {% for message in messages %}
         <div class="alert alert-warning text-center mt-1">
