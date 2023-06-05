@@ -44,6 +44,7 @@ def upload(request):
             q = Question.objects.get_or_create(question=row[1])[0]
             q.category = Category.objects.get_or_create(name=row[2])[0] if row[2] else None
             q.is_fundamental = True if row[3] and row[3].lower() == 'yes' else False
+            q.active = True
             q.save()
 
         messages.success(request, "Questions uploaded successfully")
@@ -131,25 +132,23 @@ def public_believes(request):
 
 
 def reasons(request, id):
+    if request.method == 'POST':
+        reason = request.POST.get('reason')
+        file = request.FILES.get('file')
+        if reason:
+            r = Reason.objects.create(
+                user=request.user,
+                question=Question.objects.get(id=id),
+                reason=reason,
+                file=file if file else None
+            )
+            r.save()
+            messages.success(request, "Reason added successfully")
     question = Question.objects.get(id=id)
     all_reasons = Reason.objects.filter(question=question)
     return render(request, 'truthlist/reasons.html', {'question': question, 'reasons': all_reasons})
 
 
-@login_required(login_url='login')
-def add_reason(request, id):
-    if request.method == 'POST':
-        reason = request.POST.get('reason')
-        if reason:
-            r = Reason.objects.get_or_create(user=request.user, question_id=id)[0]
-            r.reason = reason
-            r.save()
-            messages.success(request, "Reason added successfully")
-            return redirect('add_reason', id=id)
-        else:
-            messages.error(request, "Reason is required")
-            return redirect('add_reason', id=id)
-    return render(request, 'truthlist/add_reason.html', {'id': id})
 
 
 @login_required(login_url='login')
@@ -171,20 +170,6 @@ def download_certificate(request):
             p.setFont('Helvetica', 12)
             p.drawString(100, 770, 'Name: ' + full_name)
             p.drawString(100, 750, 'Email: ' + email)
-            # y = 700
-            # for q in questions:
-            #     p.drawString(100, y, 'Question: ' + q.question.question)
-            #     answer = q.answer
-            #     if answer == 'agree':
-            #         answer = 'Agree'
-            #     elif answer == 'disagree':
-            #         answer = 'Disagree'
-            #     else:
-            #         answer = 'No comment'
-            #     p.drawString(100, y-20, 'Answer: ' + answer)
-            #     y -= 40
-
-            # handle page height. if page height is less than 100, then create a new page
             y = 700
             for q in questions:
                 p.drawString(100, y, 'Question: ' + q.question.question)
@@ -207,6 +192,24 @@ def download_certificate(request):
             messages.error(request, "No questions found")
             return redirect('download_certificate')
     return render(request, 'truthlist/download_certificate.html', {'questions': questions})
+
+
+@login_required(login_url='login')
+def reasons_opinion(request, id):
+    if request.method == 'POST':
+        reason_opinion = request.POST.get(str(id))
+        reason = Reason.objects.get(id=id)
+        print(reason_opinion, reason)
+        if reason:
+            ra = ReasonAnswer.objects.get_or_create(
+                user=request.user,
+                reason=reason,
+                answer=reason_opinion
+            )[0]
+            ra.save()
+            messages.success(request, "Reason opinion added successfully")
+    
+    return redirect(request.META['HTTP_REFERER'])
 
 
 

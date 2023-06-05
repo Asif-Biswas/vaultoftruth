@@ -72,12 +72,25 @@ class Reason(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     reason = models.TextField()
-    file = models.FileField(upload_to='media/reasons/', null=True, blank=True)
+    file = models.FileField(upload_to='reasons/', null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username + ' - ' + self.question.question + ' - ' + self.reason
     
+    def agreed_users(self):
+        ra = ReasonAnswer.objects.filter(reason=self, answer='agree')
+        return [ r.user for r in ra ]
+    
+    def disagreed_users(self):
+        ra = ReasonAnswer.objects.filter(reason=self, answer='disagree')
+        return [ r.user for r in ra ]
+    
+    def no_comment_users(self):
+        ra = ReasonAnswer.objects.filter(reason=self, answer='no_comment')
+        return [ r.user for r in ra ]
+    
+
 
 class ReasonAnswer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

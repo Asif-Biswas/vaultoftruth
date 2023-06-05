@@ -18,4 +18,5 @@ urlpatterns = [
     path('public-believes/', views.public_believes, name='public_believes'),
     path('reasons/<int:id>/', views.reasons, name='reasons'),
     path('download-certificate/', views.download_certificate, name='download_certificate'),
+    path('reasons-opinion/<int:id>/', views.reasons_opinion, name='reasons_opinion'),
 ]

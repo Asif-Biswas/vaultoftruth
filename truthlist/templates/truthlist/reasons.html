@@ -11,6 +11,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Assertions</th>
+                <th scope="col">File</th>
                 <th scope="col">Agree</th>
                 <th scope="col">Disagree</th>
                 <th scope="col">No Comment</th>
@@ -19,19 +20,29 @@
             <tbody>
 
                 {% for data in reasons %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ data.reason }}</td>
-                    <td>
-                        <input class="radio-btn" type="radio" name="{{ data.id }}" value="agree">
-                    </td>
-                    <td>
-                        <input class="radio-btn" type="radio" name="{{ data.id }}" value="disagree">
-                    </td>
-                    <td>
-                        <input class="radio-btn" type="radio" name="{{ data.id }}" value="no_comment">
-                    </td>
-                </tr>
+                <form method="post" action="{% url 'reasons_opinion' data.id %}">
+                    {% csrf_token %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ data.reason }}</td>
+                        <td>
+                            {% if data.file %}
+                                <a href="{{ data.file.url }}" target="_blank">File</a>
+                            {% else %}
+                                No file
+                            {% endif %}
+                        </td>
+                        <td>
+                            <input class="radio-btn" type="radio" name="{{ data.id }}" value="agree" onclick="this.form.submit()" {% if request.user in data.agreed_users %} checked {% endif %}>
+                        </td>
+                        <td>
+                            <input class="radio-btn" type="radio" name="{{ data.id }}" value="disagree" onclick="this.form.submit()" {% if request.user in data.disagreed_users %} checked {% endif %}>
+                        </td>
+                        <td>
+                            <input class="radio-btn" type="radio" name="{{ data.id }}" value="no_comment" onclick="this.form.submit()" {% if request.user in data.no_comment_users %} checked {% endif %}>
+                        </td>
+                    </tr>
+                </form>
                 {% endfor %}
             </tbody>
         </table>
@@ -39,15 +50,16 @@
         <p class="mt-3 ml-5">No assertions found.</p>
     {% endif %}
 
-    <form class="card p-3">
+    <form class="card p-3" method="post" enctype="multipart/form-data" action="{% url 'reasons' question.id %}">
+        {% csrf_token %}
         <p>If you believe, share your reasons.</p>
         <div class="form-group">
             <label for="reason">Reason</label>
-            <textarea class="form-control" id="reason" rows="3"></textarea>
+            <textarea name="reason" class="form-control" id="reason" rows="3"></textarea>
         </div>
         <div class="form-group">
             <label for="file">File</label>
-            <input type="file" class="form-control-file" id="file">
+            <input name="file" type="file" class="form-control-file" id="file">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
