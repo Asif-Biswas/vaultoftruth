@@ -19,4 +19,6 @@ urlpatterns = [
     path('reasons/<int:id>/', views.reasons, name='reasons'),
     path('download-certificate/', views.download_certificate, name='download_certificate'),
     path('reasons-opinion/<int:id>/', views.reasons_opinion, name='reasons_opinion'),
+    path('category', views.category, name='category'),
+    path('category-question/<int:id>/', views.category_question, name='category_question')
 ]

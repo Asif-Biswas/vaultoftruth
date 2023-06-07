@@ -12,6 +12,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
+    def total_questions(self):
+        return len(Question.objects.filter(category=self))
+    
 TRUTH_OR_LIE_CHOICES = (
     ('Truth', 'Truth'),
     ('Lie', 'Lie'),
@@ -47,6 +50,7 @@ class UserAnswer(models.Model):
         agree = len(all_answer.filter(answer='agree'))
         disagree = len(all_answer.filter(answer='disagree'))
         no_comment = len(all_answer.filter(answer='no_comment'))
+        print(agree, disagree, no_comment)
 
         # return the greater of agree or disagree or no comment
         if agree > disagree and agree > no_comment:

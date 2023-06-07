@@ -212,6 +212,15 @@ def reasons_opinion(request, id):
     return redirect(request.META['HTTP_REFERER'])
 
 
+@login_required(login_url='login')
+def category(request):
+    categories = Category.objects.all()
+    return render(request, 'truthlist/category.html', {'categories': categories})
+
+@login_required(login_url='login')
+def category_question(request, id):
+    questions = Question.objects.filter(active=True, category=Category.objects.get(id=id))
+    return render(request, 'truthlist/assessment.html', {'questions': questions})
 
 
 
