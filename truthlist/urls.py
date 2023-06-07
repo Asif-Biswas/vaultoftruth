@@ -20,5 +20,8 @@ urlpatterns = [
     path('download-certificate/', views.download_certificate, name='download_certificate'),
     path('reasons-opinion/<int:id>/', views.reasons_opinion, name='reasons_opinion'),
     path('category', views.category, name='category'),
-    path('category-question/<int:id>/', views.category_question, name='category_question')
+    path('category-question/<int:id>/', views.category_question, name='category_question'),
+    path('add-comment/<int:id>/', views.add_comment, name='add_comment'),
+    path('delete-comment/<int:id>/', views.delete_comment, name='delete_comment'),
+    path('update-believes/<int:id>/', views.update_believes, name='update_believes'),
 ]

@@ -50,7 +50,6 @@ class UserAnswer(models.Model):
         agree = len(all_answer.filter(answer='agree'))
         disagree = len(all_answer.filter(answer='disagree'))
         no_comment = len(all_answer.filter(answer='no_comment'))
-        print(agree, disagree, no_comment)
 
         # return the greater of agree or disagree or no comment
         if agree > disagree and agree > no_comment:
@@ -104,3 +103,24 @@ class ReasonAnswer(models.Model):
 
     def __str__(self):
         return self.user.username + ' - ' + self.reason.reason + ' - ' + str(self.answer)
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    comment = models.TextField()
+    file = models.FileField(upload_to='comments/', null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username + ' - ' + self.question.question + ' - ' + self.comment
+    
+
+class UpdateBelieve(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    believe = models.CharField(max_length=10)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username + ' - ' + self.question.question + ' - ' + str(self.believe)

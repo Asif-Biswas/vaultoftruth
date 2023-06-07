@@ -146,8 +146,48 @@ def reasons(request, id):
             messages.success(request, "Reason added successfully")
     question = Question.objects.get(id=id)
     all_reasons = Reason.objects.filter(question=question)
-    return render(request, 'truthlist/reasons.html', {'question': question, 'reasons': all_reasons})
+    all_comments = Comment.objects.filter(question=question)
+    return render(request, 'truthlist/reasons.html', {'question': question, 'reasons': all_reasons, 'comments': all_comments})
 
+
+@login_required(login_url='login')
+def add_comment(request, id):
+    if request.method == 'POST':
+        comment = request.POST.get('comment')
+        file = request.FILES.get('file')
+        if comment:
+            c = Comment.objects.create(
+                user=request.user,
+                question=Question.objects.get(id=id),
+                comment=comment
+            )
+            if file:
+                c.file = file
+            c.save()
+            messages.success(request, "Comment added successfully")
+            return redirect('reasons', id=id)
+
+@login_required(login_url='login')
+def delete_comment(request, id):
+    c = Comment.objects.get(id=id)
+    c.delete()
+    return redirect('reasons', id=c.question.id)
+
+
+@login_required(login_url='login')
+def update_believes(request, id):
+    if request.method == 'POST':
+        question = Question.objects.get(id=id)
+        update_believe = request.POST.get('update_believe')
+        if update_believe:
+            ub = UpdateBelieve.objects.get_or_create(
+                user=request.user,
+                question=question,
+                believe=update_believe
+            )[0]
+            ub.save()
+            return render(request, 'truthlist/assessment.html', {'questions': [question]})
+        
 
 
 
