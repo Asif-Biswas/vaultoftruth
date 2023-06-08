@@ -55,19 +55,32 @@ class UserAnswer(models.Model):
         if agree > disagree and agree > no_comment:
             parcentage = (agree / total) * 100
             parcentage = round(parcentage, 2)
-            return 'Agree', parcentage
+            return 'Agree', parcentage, total, agree, disagree, no_comment
         elif disagree > agree and disagree > no_comment:
             parcentage = (disagree / total) * 100
             parcentage = round(parcentage, 2)
-            return 'Disagree', parcentage
+            return 'Disagree', parcentage, total, agree, disagree, no_comment
         elif no_comment > agree and no_comment > disagree:
             parcentage = (no_comment / total) * 100
             parcentage = round(parcentage, 2)
-            return 'No comment', parcentage
+            return 'No comment', parcentage, total, agree, disagree, no_comment
         else:
-            parcentage = (no_comment / total) * 100
-            parcentage = round(parcentage, 2)
-            return 'No comment', parcentage
+            if agree == disagree:
+                parcentage = (agree / total) * 100
+                parcentage = round(parcentage, 2)
+                return 'Agree', parcentage, total, agree, disagree, no_comment
+            elif agree == no_comment:
+                parcentage = (agree / total) * 100
+                parcentage = round(parcentage, 2)
+                return 'Agree', parcentage, total, agree, disagree, no_comment
+            elif disagree == no_comment:
+                parcentage = (disagree / total) * 100
+                parcentage = round(parcentage, 2)
+                return 'Disagree', parcentage, total, agree, disagree, no_comment
+            else:
+                parcentage = (agree / total) * 100
+                parcentage = round(parcentage, 2)
+                return 'Agree', parcentage, total, agree, disagree, no_comment
 
     
 
