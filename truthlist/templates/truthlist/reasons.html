@@ -117,22 +117,24 @@
                         </div>
                         <div class="ml-4">
                             <p class="mb-0">{{ comment.comment }}</p>
-                            {% if request.user in comment.liked_users.all %}
-                                <span id="remove-like-comment-{{comment.id}}" onclick="removeLikeComment({{comment.id}})" style="cursor: pointer;" class="text-dark"><i class="fas fa-thumbs-up"></i></span>
-                                <span id="like-comment-{{comment.id}}" onclick="likeComment({{comment.id}})" style="cursor: pointer;" class="d-none"><i class="far fa-thumbs-up"></i></span>
-                            {% else %}
-                                <span id="like-comment-{{comment.id}}" onclick="likeComment({{comment.id}})" style="cursor: pointer;" class="text-dark"><i class="far fa-thumbs-up"></i></span>
-                                <span id="remove-like-comment-{{comment.id}}" onclick="removeLikeComment({{comment.id}})" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-up"></i></span>
-                            {% endif %}
-                            <span id="count-like-comment-{{comment.id}}" class="mr-2">{{ comment.liked_users.count }}</span>
-                            {% if request.user in comment.disliked_users.all %}
-                                <span id="remove-dislike-comment-{{comment.id}}" onclick="removeDislikeComment({{comment.id}})" style="cursor: pointer;"><i class="fas fa-thumbs-down"></i></span>
-                                <span id="dislike-comment-{{comment.id}}" onclick="dislikeComment({{comment.id}})" style="cursor: pointer;" class="d-none"><i class="far fa-thumbs-down"></i></span>
-                            {% else %}
-                                <span id="dislike-comment-{{comment.id}}" onclick="dislikeComment({{comment.id}})" style="cursor: pointer;"><i class="far fa-thumbs-down"></i></span>
-                                <span id="remove-dislike-comment-{{comment.id}}" onclick="removeDislikeComment({{comment.id}})" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-down"></i></span>
-                            {% endif %}
-                            <span id="count-dislike-comment-{{comment.id}}" class="mr-2">{{ comment.disliked_users.count }}</span>
+                            <span style="font-size: 12px;">
+                                {% if request.user in comment.liked_users.all %}
+                                    <span id="remove-like-comment-{{comment.id}}" onclick="removeLikeComment({{comment.id}})" style="cursor: pointer;" class="text-success">Agree</span>
+                                    <span id="like-comment-{{comment.id}}" onclick="likeComment({{comment.id}})" style="cursor: pointer;" class="d-none">Agree</span>
+                                {% else %}
+                                    <span id="like-comment-{{comment.id}}" onclick="likeComment({{comment.id}})" style="cursor: pointer;" class="">Agree</span>
+                                    <span id="remove-like-comment-{{comment.id}}" onclick="removeLikeComment({{comment.id}})" style="cursor: pointer;" class="d-none text-success">Agree</span>
+                                {% endif %}
+                                <span id="count-like-comment-{{comment.id}}" class="mr-2">{{ comment.liked_users.count }}</span>
+                                {% if request.user in comment.disliked_users.all %}
+                                    <span id="remove-dislike-comment-{{comment.id}}" onclick="removeDislikeComment({{comment.id}})" style="cursor: pointer;" class=" text-danger">Disagree</span>
+                                    <span id="dislike-comment-{{comment.id}}" onclick="dislikeComment({{comment.id}})" style="cursor: pointer;" class="d-none">Disagree</span>
+                                {% else %}
+                                    <span id="dislike-comment-{{comment.id}}" onclick="dislikeComment({{comment.id}})" style="cursor: pointer;"  class="">Disagree</span>
+                                    <span id="remove-dislike-comment-{{comment.id}}" onclick="removeDislikeComment({{comment.id}})" style="cursor: pointer;" class="d-none text-danger">Disagree</span>
+                                {% endif %}
+                                <span id="count-dislike-comment-{{comment.id}}" class="mr-2">{{ comment.disliked_users.count }}</span>
+                            </span>
                             {% if comment.file %}
                                 <a style="font-size: 12px;" href="{{ comment.file.url }}" class="mr-2" target="_blank">File</a>
                             {% endif %}
@@ -159,19 +161,19 @@
                                         <div class="ml-4">
                                             <p class="mb-0 mt-0">{{ reply.reply }}</p>
                                             {% if request.user in reply.liked_users.all %}
-                                                <span id="remove-like-reply-{{reply.id}}" onclick="removeLikeReply({{reply.id}})" style="cursor: pointer;" class="text-dark"><i class="fas fa-thumbs-up"></i></span>
-                                                <span id="like-reply-{{reply.id}}" onclick="likeReply({{reply.id}})" style="cursor: pointer;" class="d-none"><i class="far fa-thumbs-up"></i></span>
+                                                <span id="remove-like-reply-{{reply.id}}" onclick="removeLikeReply({{reply.id}})" style="cursor: pointer;" class="text-dark">Agree</span>
+                                                <span id="like-reply-{{reply.id}}" onclick="likeReply({{reply.id}})" style="cursor: pointer;" class="d-none">Agree</span>
                                             {% else %}
-                                                <span id="like-reply-{{reply.id}}" onclick="likeReply({{reply.id}})" style="cursor: pointer;" class="text-dark"><i class="far fa-thumbs-up"></i></span>
-                                                <span id="remove-like-reply-{{reply.id}}" onclick="removeLikeReply({{reply.id}})" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-up"></i></span>
+                                                <span id="like-reply-{{reply.id}}" onclick="likeReply({{reply.id}})" style="cursor: pointer;" class="text-dark">Agree</span>
+                                                <span id="remove-like-reply-{{reply.id}}" onclick="removeLikeReply({{reply.id}})" style="cursor: pointer;" class="d-none">Agree</span>
                                             {% endif %}
                                             <span id="count-like-reply-{{reply.id}}" class="mr-2">{{ reply.liked_users.count }}</span>
                                             {% if request.user in reply.disliked_users.all %}
-                                                <span id="remove-dislike-reply-{{reply.id}}" onclick="removeDislikeReply({{reply.id}})" style="cursor: pointer;"><i class="fas fa-thumbs-down"></i></span>
-                                                <span id="dislike-reply-{{reply.id}}" onclick="dislikeReply({{reply.id}})" style="cursor: pointer;" class="d-none"><i class="far fa-thumbs-down"></i></span>
+                                                <span id="remove-dislike-reply-{{reply.id}}" onclick="removeDislikeReply({{reply.id}})" style="cursor: pointer;">Disagree</span>
+                                                <span id="dislike-reply-{{reply.id}}" onclick="dislikeReply({{reply.id}})" style="cursor: pointer;" class="d-none">Disagree</span>
                                             {% else %}
-                                                <span id="dislike-reply-{{reply.id}}" onclick="dislikeReply({{reply.id}})" style="cursor: pointer;"><i class="far fa-thumbs-down"></i></span>
-                                                <span id="remove-dislike-reply-{{reply.id}}" onclick="removeDislikeReply({{reply.id}})" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-down"></i></span>
+                                                <span id="dislike-reply-{{reply.id}}" onclick="dislikeReply({{reply.id}})" style="cursor: pointer;">Disagree</span>
+                                                <span id="remove-dislike-reply-{{reply.id}}" onclick="removeDislikeReply({{reply.id}})" style="cursor: pointer;" class="d-none">Disagree</span>
                                             {% endif %}
                                             <span id="count-dislike-reply-{{reply.id}}" class="mr-2">{{ reply.disliked_users.count }}</span>
                 
@@ -215,11 +217,11 @@
     </div>
     <div class="ml-4">
         <p id="reply" class="mb-0"></p>
-        <span id="like-reply" onclick="" style="cursor: pointer;"><i class="far fa-thumbs-up"></i></span>
-        <span id="remove-like-reply" onclick="" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-up"></i></span>
+        <span id="like-reply" onclick="" style="cursor: pointer;">Agree</span>
+        <span id="remove-like-reply" onclick="" style="cursor: pointer;" class="d-none">Agree</span>
         <span id="count-like-reply" class="mr-2">0</span>
-        <span id="dislike-reply" onclick="" style="cursor: pointer;"><i class="far fa-thumbs-down"></i></span>
-        <span id="remove-dislike-reply" onclick="" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-down"></i></span>
+        <span id="dislike-reply" onclick="" style="cursor: pointer;">Disagree</span>
+        <span id="remove-dislike-reply" onclick="" style="cursor: pointer;" class="d-none">Disagree</span>
         <span id="count-dislike-reply" class="mr-2">0</span>
 
         <a id="file" style="font-size: 12px;" href="" class="mr-2 d-none" target="_blank">File</a>
