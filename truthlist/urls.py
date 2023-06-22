@@ -28,4 +28,12 @@ urlpatterns = [
     path('delete-reply/<int:id>/', views.delete_reply, name='delete_reply'),
     path('check-for-reply/<int:comment_id>/<int:reply_id>/', views.check_for_reply, name='check_for_reply'),
     
+    path('like-comment/<int:id>/', views.like_comment, name='like_comment'),
+    path('dislike-comment/<int:id>/', views.dislike_comment, name='dislike_comment'),
+    path('remove-like-comment/<int:id>/', views.remove_like_comment, name='remove_like_comment'),
+    path('remove-dislike-comment/<int:id>/', views.remove_dislike_comment, name='remove_dislike_comment'),
+    path('like-reply/<int:id>/', views.like_reply, name='like_reply'),
+    path('dislike-reply/<int:id>/', views.dislike_reply, name='dislike_reply'),
+    path('remove-like-reply/<int:id>/', views.remove_like_reply, name='remove_like_reply'),
+    path('remove-dislike-reply/<int:id>/', views.remove_dislike_reply, name='remove_dislike_reply'),
 ]

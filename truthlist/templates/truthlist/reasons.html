@@ -117,6 +117,22 @@
                         </div>
                         <div class="ml-4">
                             <p class="mb-0">{{ comment.comment }}</p>
+                            {% if request.user in comment.liked_users.all %}
+                                <span id="remove-like-comment-{{comment.id}}" onclick="removeLikeComment({{comment.id}})" style="cursor: pointer;" class="text-dark"><i class="fas fa-thumbs-up"></i></span>
+                                <span id="like-comment-{{comment.id}}" onclick="likeComment({{comment.id}})" style="cursor: pointer;" class="d-none"><i class="far fa-thumbs-up"></i></span>
+                            {% else %}
+                                <span id="like-comment-{{comment.id}}" onclick="likeComment({{comment.id}})" style="cursor: pointer;" class="text-dark"><i class="far fa-thumbs-up"></i></span>
+                                <span id="remove-like-comment-{{comment.id}}" onclick="removeLikeComment({{comment.id}})" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-up"></i></span>
+                            {% endif %}
+                            <span id="count-like-comment-{{comment.id}}" class="mr-2">{{ comment.liked_users.count }}</span>
+                            {% if request.user in comment.disliked_users.all %}
+                                <span id="remove-dislike-comment-{{comment.id}}" onclick="removeDislikeComment({{comment.id}})" style="cursor: pointer;"><i class="fas fa-thumbs-down"></i></span>
+                                <span id="dislike-comment-{{comment.id}}" onclick="dislikeComment({{comment.id}})" style="cursor: pointer;" class="d-none"><i class="far fa-thumbs-down"></i></span>
+                            {% else %}
+                                <span id="dislike-comment-{{comment.id}}" onclick="dislikeComment({{comment.id}})" style="cursor: pointer;"><i class="far fa-thumbs-down"></i></span>
+                                <span id="remove-dislike-comment-{{comment.id}}" onclick="removeDislikeComment({{comment.id}})" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-down"></i></span>
+                            {% endif %}
+                            <span id="count-dislike-comment-{{comment.id}}" class="mr-2">{{ comment.disliked_users.count }}</span>
                             {% if comment.file %}
                                 <a style="font-size: 12px;" href="{{ comment.file.url }}" class="mr-2" target="_blank">File</a>
                             {% endif %}
@@ -142,6 +158,23 @@
                                         </div>
                                         <div class="ml-4">
                                             <p class="mb-0 mt-0">{{ reply.reply }}</p>
+                                            {% if request.user in reply.liked_users.all %}
+                                                <span id="remove-like-reply-{{reply.id}}" onclick="removeLikeReply({{reply.id}})" style="cursor: pointer;" class="text-dark"><i class="fas fa-thumbs-up"></i></span>
+                                                <span id="like-reply-{{reply.id}}" onclick="likeReply({{reply.id}})" style="cursor: pointer;" class="d-none"><i class="far fa-thumbs-up"></i></span>
+                                            {% else %}
+                                                <span id="like-reply-{{reply.id}}" onclick="likeReply({{reply.id}})" style="cursor: pointer;" class="text-dark"><i class="far fa-thumbs-up"></i></span>
+                                                <span id="remove-like-reply-{{reply.id}}" onclick="removeLikeReply({{reply.id}})" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-up"></i></span>
+                                            {% endif %}
+                                            <span id="count-like-reply-{{reply.id}}" class="mr-2">{{ reply.liked_users.count }}</span>
+                                            {% if request.user in reply.disliked_users.all %}
+                                                <span id="remove-dislike-reply-{{reply.id}}" onclick="removeDislikeReply({{reply.id}})" style="cursor: pointer;"><i class="fas fa-thumbs-down"></i></span>
+                                                <span id="dislike-reply-{{reply.id}}" onclick="dislikeReply({{reply.id}})" style="cursor: pointer;" class="d-none"><i class="far fa-thumbs-down"></i></span>
+                                            {% else %}
+                                                <span id="dislike-reply-{{reply.id}}" onclick="dislikeReply({{reply.id}})" style="cursor: pointer;"><i class="far fa-thumbs-down"></i></span>
+                                                <span id="remove-dislike-reply-{{reply.id}}" onclick="removeDislikeReply({{reply.id}})" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-down"></i></span>
+                                            {% endif %}
+                                            <span id="count-dislike-reply-{{reply.id}}" class="mr-2">{{ reply.disliked_users.count }}</span>
+                
                                             {% if reply.file %}
                                                 <a style="font-size: 12px;" href="{{ reply.file.url }}" class="mr-2" target="_blank">File</a>
                                             {% endif %}
@@ -182,6 +215,13 @@
     </div>
     <div class="ml-4">
         <p id="reply" class="mb-0"></p>
+        <span id="like-reply" onclick="" style="cursor: pointer;"><i class="far fa-thumbs-up"></i></span>
+        <span id="remove-like-reply" onclick="" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-up"></i></span>
+        <span id="count-like-reply" class="mr-2">0</span>
+        <span id="dislike-reply" onclick="" style="cursor: pointer;"><i class="far fa-thumbs-down"></i></span>
+        <span id="remove-dislike-reply" onclick="" style="cursor: pointer;" class="d-none"><i class="fas fa-thumbs-down"></i></span>
+        <span id="count-dislike-reply" class="mr-2">0</span>
+
         <a id="file" style="font-size: 12px;" href="" class="mr-2 d-none" target="_blank">File</a>
     </div>
 </div>
@@ -267,6 +307,12 @@
         const reply = clone.querySelector('#reply');
         const file = clone.querySelector('#file');
         const deleteBtn = clone.querySelector('#delete-btn');
+        const likeReply = clone.querySelector('#like-reply');
+        const removeLikeReply = clone.querySelector('#remove-like-reply');
+        const countLikeReply = clone.querySelector('#count-like-reply');
+        const dislikeReply = clone.querySelector('#dislike-reply');
+        const removeDislikeReply = clone.querySelector('#remove-dislike-reply');
+        const countDislikeReply = clone.querySelector('#count-dislike-reply');
         replyUser.innerHTML = data.user;
         reply.innerHTML = data.reply;
         if (data.file) {
@@ -274,6 +320,19 @@
             file.href = data.file;
         }
         deleteBtn.href = '/delete-reply/' + data.id + '/'
+        likeReply.id = 'like-reply-' + data.id;
+        removeLikeReply.id = 'remove-like-reply-' + data.id;
+        countLikeReply.id = 'count-like-reply-' + data.id;
+        dislikeReply.id = 'dislike-reply-' + data.id;
+        removeDislikeReply.id = 'remove-dislike-reply-' + data.id;
+        countDislikeReply.id = 'count-dislike-reply-' + data.id;
+
+        likeReply.setAttribute('onclick', `likeReply(${data.id})`);
+        removeLikeReply.setAttribute('onclick', `removeLikeReply(${data.id})`);
+        dislikeReply.setAttribute('onclick', `dislikeReply(${data.id})`);
+        removeDislikeReply.setAttribute('onclick', `removeDislikeReply(${data.id})`);
+        
+
         replyList.appendChild(clone);
     }
 
@@ -308,6 +367,161 @@
             }
         })
     }, 5000);
+
+
+    function likeComment(id){
+        fetch(`/like-comment/${id}/`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === 'success'){
+                const remove_like_comment = document.getElementById(`remove-like-comment-${id}`);
+                const like_comment = document.getElementById(`like-comment-${id}`);
+                const like_count = document.getElementById(`count-like-comment-${id}`);
+                const remove_dislike_comment = document.getElementById(`remove-dislike-comment-${id}`);
+                const dislike_comment = document.getElementById(`dislike-comment-${id}`);
+                const dislike_count = document.getElementById(`count-dislike-comment-${id}`);
+
+                remove_like_comment.classList.remove('d-none');
+                like_comment.classList.add('d-none');
+                like_count.innerText = data.likes;
+                remove_dislike_comment.classList.add('d-none');
+                dislike_comment.classList.remove('d-none');
+                dislike_count.innerText = data.dislikes;
+            }
+        })
+    }
+
+    function removeLikeComment(id){
+        fetch(`/remove-like-comment/${id}/`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === 'success'){
+                const remove_like_comment = document.getElementById(`remove-like-comment-${id}`);
+                const like_comment = document.getElementById(`like-comment-${id}`);
+                const like_count = document.getElementById(`count-like-comment-${id}`);
+
+                remove_like_comment.classList.add('d-none');
+                like_comment.classList.remove('d-none');
+                like_count.innerText = data.likes;
+            }
+        })
+    }
+
+    function dislikeComment(id){
+        fetch(`/dislike-comment/${id}/`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === 'success'){
+                const remove_dislike_comment = document.getElementById(`remove-dislike-comment-${id}`);
+                const dislike_comment = document.getElementById(`dislike-comment-${id}`);
+                const dislike_count = document.getElementById(`count-dislike-comment-${id}`);
+                const remove_like_comment = document.getElementById(`remove-like-comment-${id}`);
+                const like_comment = document.getElementById(`like-comment-${id}`);
+                const like_count = document.getElementById(`count-like-comment-${id}`);
+
+                remove_dislike_comment.classList.remove('d-none');
+                dislike_comment.classList.add('d-none');
+                dislike_count.innerText = data.dislikes;
+                remove_like_comment.classList.add('d-none');
+                like_comment.classList.remove('d-none');
+                like_count.innerText = data.likes;
+            }
+        })
+    }
+
+    function removeDislikeComment(id){
+        fetch(`/remove-dislike-comment/${id}/`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === 'success'){
+                const remove_dislike_comment = document.getElementById(`remove-dislike-comment-${id}`);
+                const dislike_comment = document.getElementById(`dislike-comment-${id}`);
+                const dislike_count = document.getElementById(`count-dislike-comment-${id}`);
+
+                remove_dislike_comment.classList.add('d-none');
+                dislike_comment.classList.remove('d-none');
+                dislike_count.innerText = data.dislikes;
+            }
+        })
+    }
+
+    function likeReply(id){
+        fetch(`/like-reply/${id}/`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === 'success'){
+                const remove_like_reply = document.getElementById(`remove-like-reply-${id}`);
+                const like_reply = document.getElementById(`like-reply-${id}`);
+                const like_count = document.getElementById(`count-like-reply-${id}`);
+                const remove_dislike_reply = document.getElementById(`remove-dislike-reply-${id}`);
+                const dislike_reply = document.getElementById(`dislike-reply-${id}`);
+                const dislike_count = document.getElementById(`count-dislike-reply-${id}`);
+
+                remove_like_reply.classList.remove('d-none');
+                like_reply.classList.add('d-none');
+                like_count.innerText = data.likes;
+                remove_dislike_reply.classList.add('d-none');
+                dislike_reply.classList.remove('d-none');
+                dislike_count.innerText = data.dislikes;
+            }
+        })
+    }
+
+    function removeLikeReply(id){
+        fetch(`/remove-like-reply/${id}/`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === 'success'){
+                const remove_like_reply = document.getElementById(`remove-like-reply-${id}`);
+                const like_reply = document.getElementById(`like-reply-${id}`);
+                const like_count = document.getElementById(`count-like-reply-${id}`);
+
+                remove_like_reply.classList.add('d-none');
+                like_reply.classList.remove('d-none');
+                like_count.innerText = data.likes;
+            }
+        })
+    }
+
+    function dislikeReply(id){
+        fetch(`/dislike-reply/${id}/`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === 'success'){
+                const remove_dislike_reply = document.getElementById(`remove-dislike-reply-${id}`);
+                const dislike_reply = document.getElementById(`dislike-reply-${id}`);
+                const dislike_count = document.getElementById(`count-dislike-reply-${id}`);
+                const remove_like_reply = document.getElementById(`remove-like-reply-${id}`);
+                const like_reply = document.getElementById(`like-reply-${id}`);
+                const like_count = document.getElementById(`count-like-reply-${id}`);
+
+                remove_dislike_reply.classList.remove('d-none');
+                dislike_reply.classList.add('d-none');
+                dislike_count.innerText = data.dislikes;
+                remove_like_reply.classList.add('d-none');
+                like_reply.classList.remove('d-none');
+                like_count.innerText = data.likes;
+            }
+        })
+    }
+
+    function removeDislikeReply(id){
+        fetch(`/remove-dislike-reply/${id}/`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === 'success'){
+                const remove_dislike_reply = document.getElementById(`remove-dislike-reply-${id}`);
+                const dislike_reply = document.getElementById(`dislike-reply-${id}`);
+                const dislike_count = document.getElementById(`count-dislike-reply-${id}`);
+
+                remove_dislike_reply.classList.add('d-none');
+                dislike_reply.classList.remove('d-none');
+                dislike_count.innerText = data.dislikes;
+            }
+        })
+    }
+
+    
 
 </script>
 {% endblock %}

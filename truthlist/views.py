@@ -214,6 +214,75 @@ def check_for_reply(request, comment_id, reply_id):
     return JsonResponse({'reply': []})
     
 
+@login_required(login_url='login')
+def like_comment(request, id):
+    c = Comment.objects.get(id=id)
+    c.liked_users.add(request.user)
+    c.disliked_users.remove(request.user)
+    c.save()
+    return JsonResponse({'status': 'success', 'likes': c.liked_users.count(), 'dislikes': c.disliked_users.count()})
+
+
+@login_required(login_url='login')
+def dislike_comment(request, id):
+    c = Comment.objects.get(id=id)
+    c.disliked_users.add(request.user)
+    c.liked_users.remove(request.user)
+    c.save()
+    return JsonResponse({'status': 'success', 'likes': c.liked_users.count(), 'dislikes': c.disliked_users.count()})
+
+
+@login_required(login_url='login')
+def remove_like_comment(request, id):
+    c = Comment.objects.get(id=id)
+    c.liked_users.remove(request.user)
+    c.save()
+    return JsonResponse({'status': 'success', 'likes': c.liked_users.count(), 'dislikes': c.disliked_users.count()})
+
+
+@login_required(login_url='login')
+def remove_dislike_comment(request, id):
+    c = Comment.objects.get(id=id)
+    c.disliked_users.remove(request.user)
+    c.save()
+    return JsonResponse({'status': 'success', 'likes': c.liked_users.count(), 'dislikes': c.disliked_users.count()})
+
+
+@login_required(login_url='login')
+def like_reply(request, id):
+    r = Reply.objects.get(id=id)
+    r.liked_users.add(request.user)
+    r.disliked_users.remove(request.user)
+    r.save()
+    return JsonResponse({'status': 'success', 'likes': r.liked_users.count(), 'dislikes': r.disliked_users.count()})
+
+
+@login_required(login_url='login')
+def dislike_reply(request, id):
+    r = Reply.objects.get(id=id)
+    r.disliked_users.add(request.user)
+    r.liked_users.remove(request.user)
+    r.save()
+    return JsonResponse({'status': 'success', 'likes': r.liked_users.count(), 'dislikes': r.disliked_users.count()})
+
+
+@login_required(login_url='login')
+def remove_like_reply(request, id):
+    r = Reply.objects.get(id=id)
+    r.liked_users.remove(request.user)
+    r.save()
+    return JsonResponse({'status': 'success', 'likes': r.liked_users.count(), 'dislikes': r.disliked_users.count()})
+
+
+@login_required(login_url='login')
+def remove_dislike_reply(request, id):
+    r = Reply.objects.get(id=id)
+    r.disliked_users.remove(request.user)
+    r.save()
+    return JsonResponse({'status': 'success', 'likes': r.liked_users.count(), 'dislikes': r.disliked_users.count()})
+
+
+
 
 @login_required(login_url='login')
 def update_believes(request, id):

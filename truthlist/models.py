@@ -124,6 +124,8 @@ class Comment(models.Model):
     comment = models.TextField()
     file = models.FileField(upload_to='comments/', null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
+    liked_users = models.ManyToManyField(User, related_name='liked_comments', blank=True)
+    disliked_users = models.ManyToManyField(User, related_name='disliked_comments', blank=True)
 
     def __str__(self):
         return self.user.username + ' - ' + self.question.question + ' - ' + self.comment
@@ -148,6 +150,8 @@ class Reply(models.Model):
     reply = models.TextField()
     file = models.FileField(upload_to='replies/', null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
+    liked_users = models.ManyToManyField(User, related_name='liked_replies', blank=True)
+    disliked_users = models.ManyToManyField(User, related_name='disliked_replies', blank=True)
 
     def __str__(self):
         return self.user.username + ' - ' + self.comment.comment + ' - ' + self.reply
