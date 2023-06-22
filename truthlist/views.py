@@ -205,7 +205,6 @@ def delete_reply(request, id):
 def check_for_reply(request, comment_id, reply_id):
     c = Comment.objects.get(id=comment_id)
     replies = Reply.objects.filter(comment=c, id__gt=reply_id)
-    print(replies)
     if replies:
         replies_json = []
         for reply in replies:
