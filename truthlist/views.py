@@ -1,8 +1,7 @@
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 import pandas as pd
 from django.contrib import messages
-import random
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -172,6 +171,49 @@ def delete_comment(request, id):
     c = Comment.objects.get(id=id)
     c.delete()
     return redirect('reasons', id=c.question.id)
+
+
+@login_required(login_url='login')
+def add_reply(request, id):
+    if request.method == 'POST':
+        reply = request.POST.get('reply')
+        file = request.FILES.get('file')
+        if reply:
+            r = Reply.objects.create(
+                user=request.user,
+                comment=Comment.objects.get(id=id),
+                reply=reply
+            )
+            if file:
+                r.file = file
+            r.save()
+            return JsonResponse({'status': 'success', 'reply': r.reply, 'user': r.user.username, 'id': r.id, 'file': r.file.url if r.file else None})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Reply is required'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'})
+        
+
+@login_required(login_url='login')
+def delete_reply(request, id):
+    r = Reply.objects.get(id=id)
+    r.delete()
+    messages.success(request, "Reply deleted successfully")
+    return redirect('reasons', id=r.comment.question.id)
+
+
+@login_required(login_url='login')
+def check_for_reply(request, comment_id, reply_id):
+    c = Comment.objects.get(id=comment_id)
+    replies = Reply.objects.filter(comment=c, id__gt=reply_id)
+    print(replies)
+    if replies:
+        replies_json = []
+        for reply in replies:
+            replies_json.append({'reply': reply.reply, 'user': reply.user.username, 'id': reply.id, 'file': reply.file.url if reply.file else None})
+        return JsonResponse({'reply': replies_json})
+
+    return JsonResponse({'reply': []})
+    
 
 
 @login_required(login_url='login')

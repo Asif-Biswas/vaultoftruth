@@ -128,6 +128,9 @@ class Comment(models.Model):
     def __str__(self):
         return self.user.username + ' - ' + self.question.question + ' - ' + self.comment
     
+    def replies(self):
+        return Reply.objects.filter(comment=self)
+    
 
 class UpdateBelieve(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -137,3 +140,14 @@ class UpdateBelieve(models.Model):
 
     def __str__(self):
         return self.user.username + ' - ' + self.question.question + ' - ' + str(self.believe)
+    
+
+class Reply(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    reply = models.TextField()
+    file = models.FileField(upload_to='replies/', null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username + ' - ' + self.comment.comment + ' - ' + self.reply

@@ -24,4 +24,8 @@ urlpatterns = [
     path('add-comment/<int:id>/', views.add_comment, name='add_comment'),
     path('delete-comment/<int:id>/', views.delete_comment, name='delete_comment'),
     path('update-believes/<int:id>/', views.update_believes, name='update_believes'),
+    path('add-reply/<int:id>/', views.add_reply, name='add_reply'),
+    path('delete-reply/<int:id>/', views.delete_reply, name='delete_reply'),
+    path('check-for-reply/<int:comment_id>/<int:reply_id>/', views.check_for_reply, name='check_for_reply'),
+    
 ]
